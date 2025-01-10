@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using OlympicsWebApplication.Models.Olympics;
+
 namespace OlympicsWebApplication;
 
 public class Program
@@ -8,6 +11,11 @@ public class Program
 
         // Add services to the container.
         builder.Services.AddControllersWithViews();
+
+        builder.Services.AddDbContext<OlympicsDbContext>(options =>
+        {
+            options.UseSqlite(builder.Configuration["OlympicsDatabase:ConnectionString"]);
+        });
 
         var app = builder.Build();
 

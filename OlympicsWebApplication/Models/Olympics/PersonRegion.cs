@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OlympicsWebApplication.Models.Olympics;
+﻿namespace OlympicsWebApplication.Models.Olympics;
 
 public partial class PersonRegion
 {

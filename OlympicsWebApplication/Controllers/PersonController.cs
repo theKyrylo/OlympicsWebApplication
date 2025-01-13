@@ -1,27 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using OlympicsWebApplication.Models;
 using OlympicsWebApplication.Models.Olympics;
 
 namespace OlympicsWebApplication.Controllers
 {
-    public class PersonController : Controller
+    public class PersonController(OlympicsDbContext context) : Controller
     {
-        private readonly OlympicsDbContext _context;
-
-        public PersonController(OlympicsDbContext context)
-        {
-            _context = context;
-        }
-
         // GET: Person
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int size = 20)
         {
-            return View(await _context.People.ToListAsync());
+            var totalSportsmen = await context.People.CountAsync();
+
+            var pagedSportsmen = await PagingListAsync<Person>.CreateAsync(
+                async (p, s) => await Task.FromResult(context.People
+                    .OrderBy(person => person.Id)
+                    .Skip((p - 1) * s)
+                    .Take(s)),
+                totalSportsmen,
+                page,
+                size
+            );
+
+            // Pass the data as a list to the view
+            return View(await pagedSportsmen.Data.ToListAsync());
         }
 
         // GET: Person/Details/5
@@ -32,7 +34,7 @@ namespace OlympicsWebApplication.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People
+            var person = await context.People
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
@@ -49,7 +51,7 @@ namespace OlympicsWebApplication.Controllers
         }
 
         // POST: Person/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // To protect from over-posting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -57,8 +59,8 @@ namespace OlympicsWebApplication.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(person);
-                await _context.SaveChangesAsync();
+                context.Add(person);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
@@ -72,7 +74,7 @@ namespace OlympicsWebApplication.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People.FindAsync(id);
+            var person = await context.People.FindAsync(id);
             if (person == null)
             {
                 return NotFound();
@@ -81,7 +83,7 @@ namespace OlympicsWebApplication.Controllers
         }
 
         // POST: Person/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // To protect from over-posting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -96,8 +98,8 @@ namespace OlympicsWebApplication.Controllers
             {
                 try
                 {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
+                    context.Update(person);
+                    await context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +125,7 @@ namespace OlympicsWebApplication.Controllers
                 return NotFound();
             }
 
-            var person = await _context.People
+            var person = await context.People
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
@@ -138,19 +140,19 @@ namespace OlympicsWebApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var person = await _context.People.FindAsync(id);
+            var person = await context.People.FindAsync(id);
             if (person != null)
             {
-                _context.People.Remove(person);
+                context.People.Remove(person);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool PersonExists(int id)
         {
-            return _context.People.Any(e => e.Id == id);
+            return context.People.Any(e => e.Id == id);
         }
     }
 }

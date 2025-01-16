@@ -12,19 +12,19 @@ namespace OlympicsWebApplication.Controllers
         {
             var totalSportsmen = await context.People.CountAsync();
 
-            var pagedSportsmen = await PagingListAsync<Person>.CreateAsync(
-                async (p, s) => await Task.FromResult(context.People
+            var pagedSportsmen = await PagingListAsync<Person>.CreateAsync((p, s) => Task.FromResult(context.People
                     .OrderBy(person => person.Id)
                     .Skip((p - 1) * s)
-                    .Take(s)),
+                    .Take(s)), // No Task.FromResult, directly return IQueryable
                 totalSportsmen,
                 page,
                 size
             );
 
-            // Pass the data as a list to the view
-            return View(await pagedSportsmen.Data.ToListAsync());
+            return View(pagedSportsmen); // Pass the pagedSportsmen directly to the view
         }
+
+
 
         // GET: Person/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -2,7 +2,7 @@ namespace OlympicsWebApplication.Models;
 
 public class PagingListAsync<T>
 {
-    public IQueryable<T> Data { get; } // Changed to IQueryable<T>
+    public IQueryable<T> Data { get; } // Keep as IQueryable for compatibility
     public int TotalItems { get; }
     public int TotalPages { get; }
     public int Page { get; }
@@ -32,7 +32,7 @@ public class PagingListAsync<T>
         int size)
     {
         var clippedPage = ClipPage(page, totalItems, size);
-        var data = await dataGenerator(clippedPage, size);
+        var data = await dataGenerator(clippedPage, size); // Await the data generator
         return new PagingListAsync<T>(data, totalItems, clippedPage, size);
     }
 

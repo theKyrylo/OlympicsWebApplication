@@ -12,16 +12,41 @@ namespace OlympicsWebApplication.Controllers
         {
             var totalSportsmen = await context.People.CountAsync();
 
-            var pagedSportsmen = await PagingListAsync<Person>.CreateAsync((p, s) => Task.FromResult(context.People
-                    .OrderBy(person => person.Id)
-                    .Skip((p - 1) * s)
-                    .Take(s)), // No Task.FromResult, directly return IQueryable
-                totalSportsmen,
-                page,
-                size
-            );
+            // var pagedSportsmen = await PagingListAsync<Person>.CreateAsync((p, s) => Task.FromResult(context.People
+            //         .OrderBy(person => person.Id)
+            //         .Skip((p - 1) * s)
+            //         .Take(s)), // No Task.FromResult, directly return IQueryable
+            //     totalSportsmen,
+            //     page,
+            //     size
+            // );
 
-            return View(pagedSportsmen); // Pass the pagedSportsmen directly to the view
+            var test = await PagingListAsync<AthleteViewModel>.CreateAsync((p, s) => 
+                        Task.FromResult(context.People
+                .Select(c => new AthleteViewModel()
+                {
+                    Id = c.Id,
+                    FullName = c.FullName,
+                    Gender = c.Gender,
+                    Height = c.Height,
+                    Weight = c.Weight,
+                    GoldMedals = context.CompetitorEvents
+                        .Where(medal => medal.Medal.MedalName == "Gold")
+                        .Count(id => id.CompetitorId == c.Id),
+                    SilverMedals = context.CompetitorEvents
+                        .Where(medal => medal.Medal.MedalName == "Silver")
+                        .Count(id => id.CompetitorId == c.Id),
+                    BronzeMedals = context.CompetitorEvents
+                        .Where(medal => medal.Medal.MedalName == "Bronze")
+                        .Count(id => id.CompetitorId == c.Id),
+                }
+                )
+                .OrderBy(person => person.Id)
+                .Skip((p - 1) * s)
+                .Take(s)), totalSportsmen,
+                    page,
+                    size);
+            return View(test); // Pass the pagedSportsmen directly to the view
         }
 
 

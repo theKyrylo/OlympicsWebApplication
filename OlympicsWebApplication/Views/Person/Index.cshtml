@@ -1,4 +1,4 @@
-@model PagingListAsync<OlympicsWebApplication.Models.Olympics.Person>
+@model PagingListAsync<OlympicsWebApplication.Models.AthleteViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -18,6 +18,9 @@
             <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().Gender)</th>
             <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().Height)</th>
             <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().Weight)</th>
+            <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().GoldMedals)</th>
+            <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().SilverMedals)</th>
+            <th>@Html.DisplayNameFor(model => model.Data.FirstOrDefault().BronzeMedals)</th>
             <th></th>
         </tr>
     </thead>
@@ -29,6 +32,9 @@
                 <td>@Html.DisplayFor(_ => item.Gender)</td>
                 <td>@Html.DisplayFor(_ => item.Height)</td>
                 <td>@Html.DisplayFor(_ => item.Weight)</td>
+                <td>@Html.DisplayFor(_ => item.GoldMedals)</td>
+                <td>@Html.DisplayFor(_ => item.SilverMedals)</td>
+                <td>@Html.DisplayFor(_ => item.BronzeMedals)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

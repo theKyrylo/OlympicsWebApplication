@@ -39,6 +39,7 @@ namespace OlympicsWebApplication.Controllers
                     BronzeMedals = context.CompetitorEvents
                         .Where(medal => medal.Medal.MedalName == "Bronze")
                         .Count(id => id.CompetitorId == c.Id),
+                    StartCount = context.CompetitorEvents.Count(id => id.CompetitorId == c.Id)
                 }
                 )
                 .OrderBy(person => person.Id)

@@ -43,8 +43,27 @@ namespace OlympicsWebApplication.Controllers
 
         public async Task<IActionResult> SportsmanEvents(int sportsmanId, int page = 1, int size = 20)
         {
-            var events = await context.Events.CountAsync();
-            return View(events - sportsmanId);
+            var totalEvents = await context.CompetitorEvents.Where(e => e.CompetitorId == sportsmanId).CountAsync();
+            
+            var pagedEvents = await PagingListAsync<AthleteParticipationViewModel>.CreateAsync((p, s) =>
+                Task.FromResult(context.CompetitorEvents
+                    .Select(e => new AthleteParticipationViewModel()
+                    {
+                        AthleteId = e.CompetitorId,
+                        SportName = e.Event.Sport.SportName,
+                        EventName = e.Event.EventName,
+                        Olympiad = e.Competitor.Games.GamesName,
+                        Season = e.Competitor.Games.Season,
+                        Age = e.Competitor.Age,
+                        Medal = e.Medal.MedalName
+                    })
+                    .Where(s => s.AthleteId == sportsmanId)
+                    .OrderBy(ev => ev.EventName)
+                    .Skip((p - 1) * s)
+                    .Take(s)), totalEvents,
+                page,
+                size);
+            return View(pagedEvents);
         }
 
         // GET: Person/Details/5

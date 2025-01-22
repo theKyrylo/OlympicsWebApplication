@@ -10,6 +10,5 @@ public class AthleteViewModel
     public int GoldMedals { get; set; }
     public int SilverMedals { get; set; }
     public int BronzeMedals { get; set; }
-    
     public int StartCount { get; set; }
 }

@@ -12,16 +12,7 @@ namespace OlympicsWebApplication.Controllers
         {
             var totalSportsmen = await context.People.CountAsync();
 
-            // var pagedSportsmen = await PagingListAsync<Person>.CreateAsync((p, s) => Task.FromResult(context.People
-            //         .OrderBy(person => person.Id)
-            //         .Skip((p - 1) * s)
-            //         .Take(s)), // No Task.FromResult, directly return IQueryable
-            //     totalSportsmen,
-            //     page,
-            //     size
-            // );
-
-            var test = await PagingListAsync<AthleteViewModel>.CreateAsync((p, s) => 
+            var pagedSportsmen = await PagingListAsync<AthleteViewModel>.CreateAsync((p, s) => 
                         Task.FromResult(context.People
                 .Select(c => new AthleteViewModel()
                 {
@@ -47,10 +38,14 @@ namespace OlympicsWebApplication.Controllers
                 .Take(s)), totalSportsmen,
                     page,
                     size);
-            return View(test); // Pass the pagedSportsmen directly to the view
+            return View(pagedSportsmen); // Pass the pagedSportsmen directly to the view
         }
 
-
+        public async Task<IActionResult> SportsmanEvents(int sportsmanId, int page = 1, int size = 20)
+        {
+            var events = await context.Events.CountAsync();
+            return View(events - sportsmanId);
+        }
 
         // GET: Person/Details/5
         public async Task<IActionResult> Details(int? id)

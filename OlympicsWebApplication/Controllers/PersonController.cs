@@ -87,7 +87,6 @@ namespace OlympicsWebApplication.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 var athlete = context.People.Find(model.AthleteId);
                 if (athlete == null)
                 {
@@ -106,16 +105,16 @@ namespace OlympicsWebApplication.Controllers
                     Games = new Game { GamesName = model.Olympiad }
                 };
 
-                var participation = new CompetitorEvent()
+                var competitorEvent = new CompetitorEvent
                 {
-                    CompetitorId = model.AthleteId,
-                    Event = eventEntity,
-                    Competitor = gameEntity,
-                    Medal = null
+                    CompetitorId = gameEntity.Id,
+                    EventId = eventEntity.Id,
                 };
 
                 // Add records to the database
-                context.CompetitorEvents.Add(participation);
+                context.Events.Add(eventEntity);
+                context.GamesCompetitors.Add(gameEntity);
+                context.CompetitorEvents.Add(competitorEvent);
                 context.SaveChanges();
 
                 return RedirectToAction("SportsmanEvents", "Person",new { sportsmanId = model.AthleteId });

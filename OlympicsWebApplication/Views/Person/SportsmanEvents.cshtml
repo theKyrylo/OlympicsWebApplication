@@ -5,7 +5,7 @@
     Layout = "_Layout";
 }
 
-<h2>Participations</h2>
+<h2>Participations DEBUG: @Model.Data.First().AthleteId</h2>
 <table class="table">
     <thead>
     <tr>
@@ -32,7 +32,7 @@
     </tbody>
 </table>
 
-<a href="@Url.Action("AddEvent", "Events", new { sportsmanId = ViewBag.SportsmanId })" class="btn btn-primary">Add Event</a>
+<a href="@Url.Action("AddParticipation", "Person", new { sportsmanId = Model.Data.First().AthleteId })" class="btn btn-primary">Add Event</a>
 
 <nav aria-label="Sportsmen page navigation">
     <ul class="pagination">

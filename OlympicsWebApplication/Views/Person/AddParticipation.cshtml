@@ -1,0 +1,34 @@
+@model AthleteParticipationViewModel
+
+@{
+    ViewBag.Title = "Add participation";
+    Layout = "_Layout";
+}
+
+<h2>Add Participation</h2>
+
+<form asp-action="AddParticipation" method="post">
+    <input type="hidden" asp-for="AthleteId" />
+
+    <div class="form-group">
+        <label asp-for="SportName"></label>
+        <input type="text" class="form-control" asp-for="SportName" placeholder="Enter sport name" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="EventName"></label>
+        <input type="text" class="form-control" asp-for="EventName" placeholder="Enter event name" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Olympiad"></label>
+        <input type="text" class="form-control" asp-for="Olympiad" placeholder="Enter Olympiad name" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Age"></label>
+        <input type="number" class="form-control" asp-for="Age" placeholder="Enter athlete age at event" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Participation</button>
+</form>

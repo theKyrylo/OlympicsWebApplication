@@ -36,7 +36,7 @@
                 <td>@Html.DisplayFor(_ => item.GoldMedals)</td>
                 <td>@Html.DisplayFor(_ => item.SilverMedals)</td>
                 <td>@Html.DisplayFor(_ => item.BronzeMedals)</td>
-                <td><a href="@Url.Action("SportsmanEvents", new {sportsmanId = item.Id})">
+                <td><a href="@Url.Action("SportsmanEvents", "Person", new {sportsmanId = item.Id})">
                     @Html.DisplayFor(_ => item.StartCount)
                 </a></td>
                 <td>

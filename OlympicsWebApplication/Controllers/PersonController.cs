@@ -66,6 +66,65 @@ namespace OlympicsWebApplication.Controllers
             return View(pagedEvents);
         }
 
+        public IActionResult AddParticipation(int sportsmanId)
+        {
+            var athlete = context.People.Find(sportsmanId);
+            if (athlete == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AthleteParticipationViewModel()
+            {
+                AthleteId = sportsmanId
+            };
+            
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult AddParticipation(AthleteParticipationViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                var athlete = context.People.Find(model.AthleteId);
+                if (athlete == null)
+                {
+                    return NotFound();
+                }
+                
+                var eventEntity = new Event
+                {
+                    EventName = model.EventName,
+                    Sport = new Sport { SportName = model.SportName }
+                };
+
+                var gameEntity = new GamesCompetitor()
+                {
+                    Age = model.Age,
+                    Games = new Game { GamesName = model.Olympiad }
+                };
+
+                var participation = new CompetitorEvent()
+                {
+                    CompetitorId = model.AthleteId,
+                    Event = eventEntity,
+                    Competitor = gameEntity,
+                    Medal = null
+                };
+
+                // Add records to the database
+                context.CompetitorEvents.Add(participation);
+                context.SaveChanges();
+
+                return RedirectToAction("SportsmanEvents", "Person",new { sportsmanId = model.AthleteId });
+            }
+
+            return View(model);
+        }
+
+        
         // GET: Person/Details/5
         public async Task<IActionResult> Details(int? id)
         {
